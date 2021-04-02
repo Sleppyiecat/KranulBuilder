@@ -1,0 +1,71 @@
+name: Ofox build Environment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+   
+env:
+  GitHubMail: "adeilmazk@gmail.com"
+  GitHubName: "Gabriel260" 
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Set Git Configs & Secrets
+        run: |
+          git config --global user.email ${GitHubMail}
+          git config --global user.name ${GitHubName}
+          git config --global credential.helper store
+          git config --global color.ui false
+          echo "https://${GitHubName}:${{ secrets.GH_TOKEN }}@github.com" > ~/.git-credentials
+          echo "${{ secrets.BOT_TOKEN }}" > ~/bot_token.txt
+
+      # Cleanup The Actions Workspace Using Custom Composite Run Actions
+      - uses: rokibhasansagar/slimhub_actions@main
+
+      - name: Setup env
+        run: |
+          sudo apt update -y &>/dev/null
+          sudo apt upgrade -y &>/dev/null
+          sudo apt-get -qq install bc build-essential zip curl libstdc++6 git wget python gcc clang libssl-dev rsync flex bison ccache openjdk-8-jdk aria2 &>/dev/null
+          git clone https://github.com/akhilnarang/scripts
+          bash scripts/setup/android_build_env.sh &>/dev/null
+
+      - name: Sync Ofox/device sources
+        run: |
+          mkdir ~/fox
+          cd ~/fox
+          repo init -u --depth=1 https://gitlab.com/OrangeFox/Manifest.git -b fox_9.0
+          repo sync -j8 --force-sync
+          git clone https://github.com/Gabriel260/android_device_samsung_a10-ofox device/samsung/a10
+ 
+      - name: Compile
+        run: 
+          cd ~/fox
+          . build/envsetup.sh
+          lunch omni_a10-eng
+          mka recoveryimage
+
+      - name: Upload the recovery
+        run: |
+          cd ~/fox/out/target/product/a10
+          export BOT_TOKEN=$(cat ~/bot_token.txt)
+          export SUM=`md5sum OrangeFox-R11.0-Stable-a10.zip | awk '{ print $1 }'`
+          curl -F chat_id="-1001453943965" -F document=@"OrangeFox-R11.0-Stable-a10.zip" -F caption="MD5=$SUM" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
+
+      - name: Loop Workflow
+        continue-on-error: true
+        run: |
+          # ${GITHUB_REPOSITORY} is the repo slug which runs this script
+          git clone https://${{ secrets.GH_TOKEN }}@github.com/${GITHUB_REPOSITORY} loop
+          cd loop || exit 1
+          echo $(( RANDOM - ( RANDOM % RANDOM ) )) > looper.txt
+          git add looper.txt
+          git commit -m "Workflow: Loop"
+          git push -q https://${{ secrets.GH_TOKEN }}@github.com/${GITHUB_REPOSITORY} HEAD:main
