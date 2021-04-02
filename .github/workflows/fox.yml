@@ -47,8 +47,9 @@ jobs:
  
       - name: Compile
         run: 
+          rm -rf ~/work
           cd ~/fox
-          . build/envsetup.sh
+          source ./build/envsetup.sh
           lunch omni_a10-eng
           mka recoveryimage
 
