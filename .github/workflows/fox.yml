@@ -1,4 +1,4 @@
-name: Ofox build Environment
+name: Kernel build Environment
 
 on:
   push:
@@ -21,15 +21,10 @@ jobs:
         run: |
           git config --global user.email ${GitHubMail} && git config --global user.name ${GitHubName} && git config --global credential.helper store && git config --global color.ui true && echo "https://${GitHubName}:${{ secrets.GH_TOKEN }}@github.com" > ~/.git-credentials && echo "${{ secrets.BOT_TOKEN }}" > ~/bot_token.txt
 
-       - name: Setup env
-        continue-on-error: true
-        run: |
-          sudo apt-get install git
-
       # Get kernel sources
       - name: Sync kernel sources
         run: |
-         git clone https://github.com/Sleppyiecat/vantombe_xiaomi_davinci --depth=1 -b Beta davinci
+         sudo apt-get install git && git clone https://github.com/Sleppyiecat/vantombe_xiaomi_davinci --depth=1 -b Beta davinci
  
       - name: Compile
         run: 
