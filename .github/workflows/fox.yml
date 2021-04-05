@@ -24,12 +24,21 @@ jobs:
       # Get kernel sources
       - name: Sync kernel sources
         run: |
+         git clone https://github.com/Sleppyiecat/Anykernel --depth=1 ~/VantomBE
          git clone https://github.com/Sleppyiecat/vantombe_xiaomi_davinci --depth=1 -b Beta ~/davinci
  
       - name: Compile
         run: 
-          cd ~/davinci && ./buildme.sh
+         cd ~/davinci
+         ./buildme.sh
 
-      - name: Upload kernel images
+      - name: Creat flashable zip
         run: |
-          cd ~/davinci/out/arch/arm64/boot && curl -sL https://git.io/file-transfer | sh && ./transfer wet Image.gz-dtb && ./transfer wet dtbo.img
+          cp -f ~/davinci/out/arch/arm64/boot/Image.gz-dtb ~/VantomBE/Image.gz-dtb && cp -f ~/davinci/out/arch/arm64/boot/dtbo.img ~/VantomBE/dtbo.img
+          cd ~/VantomBE && zip -r Kernel.zip ./
+          
+      - name: Upload kernel zip
+        run: |
+          cd ~/VantomBE
+          curl -sL https://git.io/file-transfer | sh
+          ./transfer wet Kernel.zip
