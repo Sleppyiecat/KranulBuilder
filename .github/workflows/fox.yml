@@ -29,8 +29,7 @@ jobs:
  
       - name: Compile
         run: 
-         cd ~/davinci
-         ./buildme.sh
+         cd ~/davinci && ./buildme.sh
 
       - name: Creat flashable zip
         run: |
