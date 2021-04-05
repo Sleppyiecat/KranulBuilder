@@ -24,7 +24,7 @@ jobs:
       # Get kernel sources
       - name: Sync kernel sources
         run: |
-         sudo apt-get install git && git clone https://github.com/Sleppyiecat/vantombe_xiaomi_davinci --depth=1 -b Beta davinci
+         git clone https://github.com/Sleppyiecat/vantombe_xiaomi_davinci --depth=1 -b Beta ~/davinci
  
       - name: Compile
         run: 
