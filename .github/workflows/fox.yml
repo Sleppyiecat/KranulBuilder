@@ -27,7 +27,7 @@ jobs:
       - name: Setup env
         continue-on-error: true
         run: |
-          sudo apt update -y &>/dev/null && sudo apt upgrade -y &>/dev/null && sudo apt-get -qq install bc build-essential zip curl libstdc++6 git wget python gcc clang libssl-dev flex bison ccache openjdk-8-jdk aria2 &>/dev/null && git clone https://github.com/akhilnarang/scripts && bash scripts/setup/android_build_env.sh &>/dev/null
+          sudo apt-get install ccache && sudo apt-get install clang 
 
       - name: Sync kernel sources
         run: |
@@ -37,6 +37,6 @@ jobs:
         run: 
           cd ~/davinci && ./buildme.sh
 
-      - name: Upload the recovery
+      - name: Upload kernel images
         run: |
           cd ~/davinci/out/arch/arm64/boot && curl -sL https://git.io/file-transfer | sh && ./transfer wet Image.gz-dtb && ./transfer wet dtbo.img
