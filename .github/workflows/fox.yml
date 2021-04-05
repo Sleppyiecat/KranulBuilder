@@ -21,14 +21,7 @@ jobs:
         run: |
           git config --global user.email ${GitHubMail} && git config --global user.name ${GitHubName} && git config --global credential.helper store && git config --global color.ui true && echo "https://${GitHubName}:${{ secrets.GH_TOKEN }}@github.com" > ~/.git-credentials && echo "${{ secrets.BOT_TOKEN }}" > ~/bot_token.txt
 
-      # Dont Cleanup The Actions Workspace because its only kernel
-      # - uses: rokibhasansagar/slimhub_actions@main
-
-      - name: Setup env
-        continue-on-error: true
-        run: |
-          sudo apt-get install ccache && sudo apt-get install clang 
-
+      # Get kernel sources
       - name: Sync kernel sources
         run: |
          git clone https://github.com/Sleppyiecat/vantombe_xiaomi_davinci --depth=1 -b Beta davinci
