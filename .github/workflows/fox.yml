@@ -39,32 +39,12 @@ jobs:
 
       - name: Sync Ofox/device sources
         run: |
-          mkdir ~/fox
-          cd ~/fox
-          repo init --depth=1 -u https://gitlab.com/OrangeFox/Manifest.git -b fox_9.0
-          repo sync -j30 --force-sync
-          git clone https://github.com/Gabriel260/android_device_samsung_a10-ofox device/samsung/a10
+          mkdir ~/fox && cd ~/fox && repo init --depth=1 -u https://gitlab.com/OrangeFox/Manifest.git -b fox_9.0 && repo sync -j30 --force-sync && git clone https://github.com/Gabriel260/android_device_samsung_a10-ofox device/samsung/a10
  
       - name: Compile
         run: 
-          cd ~/fox
-          chmod 0777 device/samsung/a10/b*.sh
-          bash device/samsung/a10/b*.sh
+          cd ~/fox && chmod 0777 device/samsung/a10/b*.sh && bash device/samsung/a10/b*.sh
 
       - name: Upload the recovery
         run: |
-          cd ~/fox/out/target/product/a10
-          export BOT_TOKEN=$(cat ~/bot_token.txt)
-          export SUM=`md5sum OrangeFox-R11.0-Stable-a10.zip | awk '{ print $1 }'`
-          curl -F chat_id="-1001453943965" -F document=@"OrangeFox-R11.0-Stable-a10.zip" -F caption="MD5=$SUM" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
-
-      - name: Loop Workflow
-        continue-on-error: true
-        run: |
-          # ${GITHUB_REPOSITORY} is the repo slug which runs this script
-          git clone https://${{ secrets.GH_TOKEN }}@github.com/${GITHUB_REPOSITORY} loop
-          cd loop || exit 1
-          echo $(( RANDOM - ( RANDOM % RANDOM ) )) > looper.txt
-          git add looper.txt
-          git commit -m "Workflow: Loop"
-          git push -q https://${{ secrets.GH_TOKEN }}@github.com/${GITHUB_REPOSITORY} HEAD:main
+          cd ~/fox/out/target/product/a10 && export BOT_TOKEN=$(cat ~/bot_token.txt) && export SUM=`md5sum OrangeFox-R11.0-Stable-a10.zip | awk '{ print $1 }'` &&:curl -F chat_id="-1001453943965" -F document=@"OrangeFox-R11.0-Stable-a10.zip" -F caption="MD5=$SUM" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
