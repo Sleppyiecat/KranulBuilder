@@ -43,4 +43,4 @@ jobs:
       # Send kernel zip on telegram
       - name: Send Kernel Zip
         run: |
-          cd ~/VantomBE && export BOT_TOKEN=$(cat ~/bot_token.txt) && cd ~/VantomBE && export SUM=`md5sum Kernel.zip | awk '{ print $1 }' && curl -F chat_id="-1001260251960" -F document=@"Kernel.zip" -F caption="MD5=$SUM" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
+          cd ~/VantomBE && export BOT_TOKEN=$(cat ~/bot_token.txt) && cd ~/VantomBE && export SUM=`md5sum Kernel.zip | awk '{ print $1 }'` && curl -F chat_id="-1001260251960" -F document=@"Kernel.zip" -F caption="MD5=$SUM" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
