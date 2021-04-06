@@ -14,28 +14,33 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
+      # Just a checkout
       - name: Checkout
         uses: actions/checkout@main
 
+      # Include all necesarry things
       - name: Set Git Configs & Secrets
         run: |
           git config --global user.email ${GitHubMail} && git config --global user.name ${GitHubName} && git config --global credential.helper store && git config --global color.ui true && echo "https://${GitHubName}:${{ secrets.GH_TOKEN }}@github.com" > ~/.git-credentials && echo "${{ secrets.BOT_TOKEN }}" > ~/bot_token.txt
 
       # Get kernel sources
-      - name: Sync kernel sources
+      - name: Sync Kernel Sources
         run: |
          git clone https://github.com/Sleppyiecat/Anykernel --depth=1 ~/VantomBE
          git clone https://github.com/Sleppyiecat/vantombe_xiaomi_davinci --depth=1 -b Beta ~/davinci
  
-      - name: Compile
+      # Compile Kernel Source
+      - name: Compile Kernel From Source
         run: 
          cd ~/davinci && ./buildme.sh
 
-      - name: Creat flashable zip
+      # Go to anykernel dir and create zip
+      - name: Create Flashable Kernel Zip
         run: |
           cp -f ~/davinci/out/arch/arm64/boot/Image.gz-dtb ~/VantomBE/Image.gz-dtb && cp -f ~/davinci/out/arch/arm64/boot/dtbo.img ~/VantomBE/dtbo.img
           cd ~/VantomBE && zip -r Kernel.zip ./
           
-      - name: Upload kernel zip
+      # Send kernel zip on telegram
+      - name: Send Kernel Zip
         run: |
-          cd ~/VantomBE && export BOT_TOKEN=$(cat ~/bot_token.txt) && cd ~/VantomBE && export SUM=md5sum Kernel.zip | awk '{ print $1 }' && curl -F chat_id="-1001260251960" -F document=@"Kernel.zip" -F caption="MD5=$SUM" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
+          cd ~/VantomBE && export BOT_TOKEN=$(cat ~/bot_token.txt) && cd ~/VantomBE && export SUM=`md5sum Kernel.zip | awk '{ print $1 }' && curl -F chat_id="-1001260251960" -F document=@"Kernel.zip" -F caption="MD5=$SUM" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
