@@ -28,11 +28,16 @@ jobs:
         run: |
          git clone https://github.com/Sleppyiecat/Anykernel --depth=1 ~/VantomBE && rm -rf ~/VantomBE/.git
          git clone https://github.com/Sleppyiecat/vantombe_xiaomi_davinci --depth=1 -b Beta ~/davinci
+         
+      # Set up environment
+      - name: Set Up Environment
+        run: |
+         cd ~/davinci && ./envsetup.sh
  
       # Compile Kernel Source
       - name: Compile Kernel From Source
         run: 
-         cd ~/davinci && ./buildme.sh
+         cd ~/davinci && ./buildme.sh >> log.txt
 
       # Go to anykernel dir and create zip
       - name: Create Flashable Kernel Zip
@@ -40,7 +45,13 @@ jobs:
           cp -f ~/davinci/out/arch/arm64/boot/Image.gz-dtb ~/VantomBE/Image.gz-dtb && cp -f ~/davinci/out/arch/arm64/boot/dtbo.img ~/VantomBE/dtbo.img
           cd ~/VantomBE && zip -r Kernel.zip ./
           
+      # Send me build logs on telegram    
+      - name: Provide Build Logs
+        run: |
+         cd ~/davinci && export BOT_TOKEN=$(cat ~/bot_token.txt) && cd ~/davinci && curl -F chat_id="-1001260251960" -F document=@"log.txt" -F caption="Kernel build logs" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
+          
       # Send kernel zip on telegram
       - name: Send Kernel Zip
         run: |
-          cd ~/VantomBE && export BOT_TOKEN=$(cat ~/bot_token.txt) && cd ~/VantomBE && export SUM=`md5sum Kernel.zip | awk '{ print $1 }'` && curl -F chat_id="-1001260251960" -F document=@"Kernel.zip" -F caption="MD5=$SUM" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
+          cd ~/VantomBE && export BOT_TOKEN=$(cat ~/bot_token.txt) && cd ~/VantomBE && export SUM=`md5sum Kernel.zip | awk '{ print $1 }'` && curl -F chat_id="-1001260251960" -F document=@"Kernel.zip" -F caption="MD5=$SUM" https://api.telegram.org/bot$BOT_TOKEN/sendDocument          
+
