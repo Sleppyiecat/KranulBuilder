@@ -1,4 +1,4 @@
-name: Kernel build Environment
+name: Kernel Builder
 
 on:
   push:
