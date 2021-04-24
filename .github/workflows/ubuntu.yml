@@ -15,5 +15,16 @@ jobs:
         ssh_key: ${{ secrets.SSH_KEY }}
         key_file: id_ecdsa
     - uses: actions/checkout@v2
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@master
+    - name: Start SSH via ngrok
+      continue-on-error: true
+      timeout-minutes: 350
+      uses: P3TERX/ssh2actions@main
+      with:
+        mode: ngrok
+      env:
+        # You can find this token here: https://dashboard.ngrok.com/auth/your-authtoken
+        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+        # ngrok server region [us, eu, au, ap, sa, jp, in] (optional, default: us)
+        NGROK_REGION: us
+        # This password you will use when authorizing via SSH
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
