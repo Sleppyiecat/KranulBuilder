@@ -19,10 +19,10 @@ jobs:
     # Set up workflow enviroment
     - name: Set up enviroment
       run: |
-       cd work/KranulStuff/KranulStuff
        git config --global user.name "Sleppyiecat"
        git config --global user.email "mruczek70@gmail.com"
        git config --global color.ui true
+       cd /work/KranulStuff/KranulStuff
     
     # Send ssh session
     - name: Start SSH via ngrok
