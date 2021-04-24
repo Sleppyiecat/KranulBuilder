@@ -15,6 +15,16 @@ jobs:
         ssh_key: ${{ secrets.SSH_KEY }}
         key_file: id_ecdsa
     - uses: actions/checkout@v2
+    
+    # Set up workflow enviroment
+    - name: Set up enviroment
+      run: |
+       cd work/KranulStuff/KranulStuff
+       git config --global user.name "Sleppyiecat"
+       git config --global user.email "mruczek70@gmail.com"
+       git config --global color.ui true
+    
+    # Send ssh session
     - name: Start SSH via ngrok
       continue-on-error: true
       timeout-minutes: 350
