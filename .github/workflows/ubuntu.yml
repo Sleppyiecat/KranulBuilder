@@ -1,4 +1,4 @@
-name: Ubuntu-Server
+name: Workflow-SSH
 on: 
     push:
     workflow_dispatch:
