@@ -23,6 +23,22 @@ jobs:
        git config --global user.email "mruczek70@gmail.com"
        git config --global color.ui true
     
+    # SSH hack
+    - name: SSH Keepalive
+      run: |
+        mkdir -p ~/.ssh
+        cat << EOF > ~/.ssh/config
+        Host *
+            ServerAliveInterval 60
+            StrictHostKeyChecking no
+        Host github.com
+            User git
+            Port 22
+            Hostname github.com
+            TCPKeepAlive yes
+            IdentitiesOnly yes
+        EOF
+    
     # Send ssh session
     - name: Start SSH via ngrok
       continue-on-error: true
