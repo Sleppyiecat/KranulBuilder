@@ -26,17 +26,12 @@ jobs:
       # Get kernel sources
       - name: Sync Kernel Sources
         run: |
-         git clone https://github.com/Sleppyiecat/kernel_xiaomi_sm6150 --depth=1 ~/davinci
+         git clone https://github.com/Sleppyiecat/VantomBE_Xiaomi_Davinci --depth=1 ~/davinci
  
       # Compile Kernel Source
       - name: Compile Kernel From Source
         run: 
-         cd ~/davinci && ./buildme.sh >> log.txt
-          
-      # Send me build logs on telegram    
-      - name: Provide Build Logs
-        run: |
-         cd ~/davinci && export BOT_TOKEN=$(cat ~/bot_token.txt) && cd ~/davinci && curl -F chat_id="-1001260251960" -F document=@"log.txt" -F caption="Kernel build logs" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
+         cd ~/davinci && ./buildme.sh
           
       # Send kernel zip on telegram
       - name: Send Kernel Zip
