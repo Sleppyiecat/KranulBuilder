@@ -1,6 +1,5 @@
 name: Workflow-SSH
 on: 
-    workflow_run:
     workflow_dispatch:
 defaults:
   run:
