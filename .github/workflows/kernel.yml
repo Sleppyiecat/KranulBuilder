@@ -32,7 +32,7 @@ jobs:
       # Compile Kernel Source
       - name: Compile Kernel From Source
         run: 
-         ./buildme.sh
+         cd ~/davinci && ./buildme.sh
           
       # Send kernel zip on telegram
       - name: Send Kernel Zip
