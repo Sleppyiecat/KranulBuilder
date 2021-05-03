@@ -23,15 +23,16 @@ jobs:
         run: |
           git config --global user.email ${GitHubMail} && git config --global user.name ${GitHubName} && git config --global credential.helper store && git config --global color.ui true && echo "https://${GitHubName}:${{ secrets.GH_TOKEN }}@github.com" > ~/.git-credentials && echo "${{ secrets.BOT_TOKEN }}" > ~/bot_token.txt
 
-      # Get kernel sources
+      # Get sources
       - name: Sync Kernel Sources
         run: |
          git clone https://github.com/Sleppyiecat/VantomBE_Xiaomi_Davinci --depth=1 ~/davinci
+         cd ~/davinci && git clone https://github.com/kdrag0n/proton-clang --depth=1 -b master toolchain
  
       # Compile Kernel Source
       - name: Compile Kernel From Source
         run: 
-         cd ~/davinci && ./buildme.sh
+         ./buildme.sh
           
       # Send kernel zip on telegram
       - name: Send Kernel Zip
