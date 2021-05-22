@@ -24,7 +24,7 @@ jobs:
       # Get sources
       - name: Sync Kernel Sources
         run: |
-         git clone https://github.com/Sleppyiecat/VantomBE_Xiaomi_Davinci --depth=1 ~/davinci
+         git clone https://github.com/Sleppyiecat/kernel_xiaomi_sm6150 --depth=1 ~/davinci
          cd ~/davinci && git clone https://github.com/kdrag0n/proton-clang --depth=1 -b master toolchain
  
       # Compile Kernel Source
